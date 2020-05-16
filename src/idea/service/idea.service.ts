@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
 import { Idea } from '../idea.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult, DeleteResult } from 'typeorm';
 import { IdeaModel } from '../models/idea.dto';
 
 @Injectable()
@@ -13,22 +13,26 @@ export class IdeaService {
   }
 
   async findOneById(id: string): Promise<Idea | undefined> {
-    return await this.ideaRepository.findOne(id);
+    const idea: Idea = await this.ideaRepository.findOne(id).catch(error => { throw new HttpException(error.message, HttpStatus.BAD_REQUEST) });
+    if (!idea) throw new NotFoundException();
+    return idea;
   }
 
   async createIdea(data: IdeaModel): Promise<any> {
     const idea = this.ideaRepository.create(data);
-    await this.ideaRepository.save(idea);
+    await this.ideaRepository.save(idea).catch(error => { throw new HttpException(error.message, HttpStatus.BAD_REQUEST) });
     return idea;
   }
 
   async deleteIdea(id: string): Promise<any> {
-    await this.ideaRepository.delete({ id })
+    const response: any = await this.ideaRepository.delete({ id }).catch(error => { throw new HttpException(error.message, HttpStatus.BAD_REQUEST) });
+    if (response.affected == 0) throw new NotFoundException();
     return { deleted: true };
   }
 
   async updateIdea(id: string, data: Partial<IdeaModel>): Promise<Idea> {
-    await this.ideaRepository.update({ id }, data);
+    const response = await this.ideaRepository.update({ id }, data);
+    if (response.affected == 0) throw new NotFoundException();
     return this.ideaRepository.findOne(id);
   }
 }
