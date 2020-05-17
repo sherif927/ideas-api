@@ -17,7 +17,7 @@ export class User extends AbstractEntity {
     return { id, username, createdAt } as UserModel;
   }
 
-  comparePasswords(attemptPassword) {
+  comparePasswords(attemptPassword: string) {
     return Bcrypt.compare(attemptPassword, this.password);
   }
 }

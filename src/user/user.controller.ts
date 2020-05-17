@@ -1,15 +1,18 @@
-import { Controller, Post, Body, Get, Param, ParseUUIDPipe, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, ParseUUIDPipe, UsePipes, ValidationPipe, UseGuards, Request } from '@nestjs/common';
 import { UserService } from './services/user.service';
-import { LoginModel, RegistrationModel } from './models/user.dto';
+import { RegistrationModel } from './models/user.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { AuthUser } from 'src/auth/auth.user.dec';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) { }
 
+  @UseGuards(AuthGuard('local'))
   @Post('login')
-  @UsePipes(new ValidationPipe())
-  async login(@Body() creds: LoginModel) {
-    return this.userService.login(creds);
+  async login(@AuthUser() user) {
+    return user;
   }
 
   @Post('register')
@@ -18,11 +21,13 @@ export class UserController {
     return this.userService.register(creds);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   async getUsers() {
     return this.userService.findAll();
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async getUser(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     return this.userService.findById(id);
