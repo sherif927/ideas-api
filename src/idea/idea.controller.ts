@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, ParseUUIDPipe, UsePipes, ValidationPipe } from '@nestjs/common';
 import { IdeaService } from './service/idea.service';
 import { IdeaModel } from './models/idea.dto';
 
@@ -13,22 +13,24 @@ export class IdeaController {
   }
 
   @Get(':id')
-  getIdea(@Param('id') id: string) {
+  getIdea(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     return this.ideaService.findOneById(id);
   }
 
   @Post()
+  @UsePipes(new ValidationPipe())
   createIdea(@Body() idea: IdeaModel) {
     return this.ideaService.createIdea(idea);
   }
 
   @Put(':id')
-  updateIdea(@Param('id') id: string, @Body() idea: Partial<IdeaModel>) {
+  @UsePipes(new ValidationPipe())
+  updateIdea(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string, @Body() idea: Partial<IdeaModel>) {
     return this.ideaService.updateIdea(id, idea);
   }
 
   @Delete(':id')
-  deleteIdea(@Param('id') id: string) {
+  deleteIdea(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     return this.ideaService.deleteIdea(id);
   }
 }

@@ -3,6 +3,14 @@ import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Logger } from '@nestjs/common';
 
+/**
+ * interceptor class implemented
+ * as a logging service.
+ *
+ * @export
+ * @class LoggingInterceptor
+ * @implements {NestInterceptor}
+ */
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {

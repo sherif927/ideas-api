@@ -3,9 +3,6 @@ import { Entity, Column } from "typeorm";
 
 @Entity('idea')
 export class Idea extends AbstractEntity {
-  @Column()
-  text: string;
-
-  @Column()
-  description: string;
+  @Column() text: string;
+  @Column() description: string;
 }
