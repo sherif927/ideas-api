@@ -7,10 +7,11 @@ import { UserService } from './services/user.service';
 import { LocalStrategy } from 'src/auth/local.strategy';
 import { JwtStrategy } from 'src/auth/jwt.strategy';
 import { User } from './user.entity';
+import { Idea } from 'src/idea/idea.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Idea]),
     PassportModule,
     JwtModule.register({
       secret: process.env.SECRET || 'qwerty123',

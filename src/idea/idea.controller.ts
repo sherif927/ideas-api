@@ -2,6 +2,8 @@ import { Controller, Get, Post, Put, Delete, Param, Body, ParseUUIDPipe, UsePipe
 import { IdeaService } from './service/idea.service';
 import { IdeaModel } from './models/idea.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { AuthUser } from 'src/auth/auth.user.dec';
+import { userInfo } from 'os';
 
 @Controller('idea')
 export class IdeaController {
@@ -23,20 +25,45 @@ export class IdeaController {
   @UseGuards(JwtAuthGuard)
   @Post()
   @UsePipes(new ValidationPipe())
-  createIdea(@Body() idea: IdeaModel) {
-    return this.ideaService.createIdea(idea);
+  createIdea(@AuthUser() userInfo, @Body() idea: IdeaModel) {
+    return this.ideaService.createIdea(idea, userInfo.id);
   }
 
   @UseGuards(JwtAuthGuard)
   @Put(':id')
   @UsePipes(new ValidationPipe())
-  updateIdea(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string, @Body() idea: Partial<IdeaModel>) {
-    return this.ideaService.updateIdea(id, idea);
+  updateIdea(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string, @AuthUser() userInfo, @Body() idea: Partial<IdeaModel>) {
+    return this.ideaService.updateIdea(id, userInfo.id, idea);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  deleteIdea(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    return this.ideaService.deleteIdea(id);
+  deleteIdea(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string, @AuthUser() userInfo) {
+    return this.ideaService.deleteIdea(id, userInfo.id);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/bookmark')
+  bookmarkIdea(@AuthUser() userInfo, @Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+    return this.ideaService.bookmarkIdea(id, userInfo.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/bookmark')
+  unbookmarkIdea(@AuthUser() userInfo, @Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+    return this.ideaService.unbookmarkIdea(id, userInfo.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/upvote')
+  upvoteIdea(@AuthUser() userInfo, @Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+    return this.ideaService.upvoteIdea(id, userInfo.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/downvote')
+  downvoteIdea(@AuthUser() userInfo, @Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+    return this.ideaService.downvoteIdea(id, userInfo.id);
+  }
+
 }

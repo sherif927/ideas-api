@@ -1,4 +1,6 @@
 import { IsString, MinLength, Matches } from "class-validator";
+import { Idea } from "src/idea/idea.entity";
+import { IdeaModel } from "src/idea/models/idea.dto";
 
 export class LoginModel {
   @IsString()
@@ -23,5 +25,6 @@ export class UserModel {
   id: string;
   username: string;
   createdAt: Date;
+  ideas: IdeaModel[];
   token?: string;
 }
