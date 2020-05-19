@@ -5,6 +5,7 @@
   "username": "sherif",
   "password": "develionsphere",
   "database": "ideas",
+  "dropSchema": true,
   "entities": [
     "dist/**/*.entity{.ts,.js}"
   ],
