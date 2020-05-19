@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param, ParseUUIDPipe, UsePipes, ValidationPipe, UseGuards, Request } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, ParseUUIDPipe, UsePipes, ValidationPipe, UseGuards, Request, Query } from '@nestjs/common';
 import { UserService } from './services/user.service';
 import { RegistrationModel } from './models/user.dto';
 import { AuthGuard } from '@nestjs/passport';
@@ -23,8 +23,8 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async getUsers() {
-    return this.userService.findAll();
+  async getUsers(@Query('page') page: number) {
+    return this.userService.findAll(page);
   }
 
   @UseGuards(JwtAuthGuard)

@@ -13,14 +13,17 @@ export class IdeaService {
     @InjectRepository(Idea) private ideaRepository: Repository<Idea>,
     @InjectRepository(User) private userRepository: Repository<User>) { }
 
-  async findAll(): Promise<IdeaResponse[]> {
-    const ideas = await this.ideaRepository.find({ relations: ['author', 'upvotes', 'downvotes'] });
-    if (!ideas) return [];
+  async findAll(page: number = 1, newest: boolean = false): Promise<IdeaResponse[]> {
+    const ideas = await this.ideaRepository.find({
+      relations: ['author', 'upvotes', 'downvotes', 'comments'],
+      take: 25, skip: 25 * (page - 1),
+      order: newest && { createdAt: 'DESC' }
+    }); if (!ideas) return [];
     return ideas.map(idea => idea.toResponseObject());
   }
 
   async findOneById(id: string): Promise<Idea | undefined> {
-    const idea: Idea = await this.ideaRepository.findOne({ where: { id }, relations: ['author', 'upvotes', 'downvotes'] });
+    const idea: Idea = await this.ideaRepository.findOne({ where: { id }, relations: ['author', 'upvotes', 'downvotes', 'comments'] });
     if (!idea) throw new NotFoundException();
     return idea;
   }

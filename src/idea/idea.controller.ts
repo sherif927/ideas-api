@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, ParseUUIDPipe, UsePipes, ValidationPipe, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, ParseUUIDPipe, UsePipes, ValidationPipe, UseGuards, Query } from '@nestjs/common';
 import { IdeaService } from './service/idea.service';
 import { IdeaModel } from './models/idea.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -12,8 +12,14 @@ export class IdeaController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  getAll() {
-    return this.ideaService.findAll();
+  getAll(@Query('page') page: number) {
+    return this.ideaService.findAll(page);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/newest')
+  getNewest(@Query('page') page: number) {
+    return this.ideaService.findAll(page, true);
   }
 
   @UseGuards(JwtAuthGuard)

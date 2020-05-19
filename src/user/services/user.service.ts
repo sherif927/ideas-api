@@ -29,8 +29,8 @@ export class UserService {
     return response;
   }
 
-  async findAll(): Promise<UserModel[]> {
-    const users = await this.userRepository.find({ relations: ['ideas', 'bookmarks'] });
+  async findAll(page: number = 1): Promise<UserModel[]> {
+    const users = await this.userRepository.find({ relations: ['ideas', 'bookmarks'], take: 25, skip: 25 * (page - 1) });
     return users.map(user => user.toResponseObject());
   }
 
