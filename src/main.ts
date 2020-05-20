@@ -8,6 +8,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
   app.useGlobalInterceptors(new LoggingInterceptor());
+  app.enableCors({ origin: ['http://localhost:4200'] });
   await app.listen(port);
   Logger.log(`Server running on http://localhost:${port}`, 'bootstrap');
 }

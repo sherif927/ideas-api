@@ -3,7 +3,6 @@ import { IdeaService } from './service/idea.service';
 import { IdeaModel } from './models/idea.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { AuthUser } from 'src/auth/auth.user.dec';
-import { userInfo } from 'os';
 
 @Controller('idea')
 export class IdeaController {

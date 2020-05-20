@@ -33,4 +33,10 @@ export class UserController {
     return this.userService.findById(id);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('whoAmI')
+  async whoAmI(@AuthUser() user) {
+    return user;
+  }
+
 }

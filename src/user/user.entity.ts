@@ -19,7 +19,8 @@ export class User extends AbstractEntity {
   toResponseObject(): UserModel {
     const { id, username, createdAt, ideas, bookmarks } = this;
     const books = (bookmarks) ? bookmarks.map(bookmark => bookmark.toResponseObject()) : [];
-    return { id, username, createdAt, ideas, bookmarks: books } as UserModel;
+    const ideass = (ideas) ? ideas.map(i => i.toResponseObject()) : [];
+    return { id, username, createdAt, ideas: ideass, bookmarks: books } as UserModel;
   }
 
   comparePasswords(attemptPassword: string) {
